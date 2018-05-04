@@ -1,0 +1,56 @@
+{
+    "name": "saritasa/laravel-entity-services",
+    "type": "library",
+    "description": "Saritasa entity service for typical CRUD operations",
+    "keywords": ["laravel", "php", "Saritasa"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eugene Mosunov",
+            "email": "eugene.mosunov@saritasa.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "dingo/api": "2.0.0-alpha1",
+        "illuminate/support": "5.*",
+        "saritasa/laravel-repositories": "dev-master"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^6.5",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "minimum-stability": "beta",
+    "prefer-stable" : true,
+    "autoload": {
+        "psr-4" : {
+            "Saritasa\\LaravelEntityServices\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Saritasa\\LaravelEntityServices\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Saritasa\\LaravelEntityServices\\LaravelEntityServicesServiceProvider"
+            ]
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/veeeeeRySeXy/php-laravel-repositories"
+        }
+    ]
+}

@@ -14,15 +14,13 @@
         "php": ">=7.1",
         "dingo/api": "2.0.0-alpha1",
         "illuminate/support": "5.*",
-        "saritasa/laravel-repositories": "dev-master"
+        "saritasa/laravel-repositories": "^3.0@dev"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^6.5",
         "squizlabs/php_codesniffer": "^3.0"
     },
-    "minimum-stability": "beta",
-    "prefer-stable" : true,
     "autoload": {
         "psr-4" : {
             "Saritasa\\LaravelEntityServices\\": "src/"
@@ -46,11 +44,5 @@
                 "Saritasa\\LaravelEntityServices\\LaravelEntityServicesServiceProvider"
             ]
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/veeeeeRySeXy/php-laravel-repositories"
-        }
-    ]
+    }
 }

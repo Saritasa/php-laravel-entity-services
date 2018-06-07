@@ -67,15 +67,4 @@ interface IEntityService
      * @throws ValidationException
      */
     public function validate(array $data, array $rules = null): void;
-
-    /**
-     * Wrap closure in storage transaction.
-     *
-     * @param Closure $callback Callback which will be wrapped into transaction
-     *
-     * @return mixed
-     *
-     * @throws EntityServiceOperationException
-     */
-    public function handleTransaction(Closure $callback);
 }

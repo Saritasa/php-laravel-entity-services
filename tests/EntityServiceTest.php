@@ -143,59 +143,6 @@ class EntityServiceTest extends TestCase
     }
 
     /**
-     * @throws EntityServiceOperationException
-     */
-    public function testHandleTransactionMethodWhenSuccess()
-    {
-        $this->connectionMock->shouldReceive('beginTransaction');
-        $this->connectionMock->shouldReceive('commit');
-
-        $restfulService = new EntityService(
-            TestEntity::class,
-            $this->restfulServiceFactoryMock,
-            $this->repositoryMock,
-            $this->getValidatorFactory(true),
-            $this->connectionMock,
-            $this->dispatcher
-        );
-
-        $expectedResult = str_random();
-
-        $result = $restfulService->handleTransaction(function () use ($expectedResult) {
-            return $expectedResult;
-        });
-
-        $this->assertEquals($expectedResult, $result);
-    }
-
-    /**
-     * @throws EntityServiceOperationException
-     */
-    public function testHandleTransactionMethodWhenIfException()
-    {
-        $this->connectionMock->shouldReceive('beginTransaction');
-        $this->connectionMock->shouldReceive('rollBack');
-
-        $restfulService = new EntityService(
-            TestEntity::class,
-            $this->restfulServiceFactoryMock,
-            $this->repositoryMock,
-            $this->getValidatorFactory(true),
-            $this->connectionMock,
-            $this->dispatcher
-        );
-
-        $exceptionMessage = str_random();
-
-        $this->expectException(EntityServiceOperationException::class);
-        $this->expectExceptionMessage($exceptionMessage);
-
-        $restfulService->handleTransaction(function () use ($exceptionMessage) {
-            throw new RepositoryException($this->repositoryMock, $exceptionMessage);
-        });
-    }
-
-    /**
      * @throws ValidationException
      */
     public function testValidateMethodIfException()

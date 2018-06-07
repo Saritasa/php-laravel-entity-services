@@ -96,8 +96,7 @@ class EntityService implements IEntityService
     {
         $this->validate($modelParams);
         return $this->handleTransaction(function () use ($modelParams) {
-            $model = new $this->modelClass($modelParams);
-            $this->repository->create(new $this->modelClass($modelParams));
+            $model = $this->repository->create(new $this->modelClass($modelParams));
             $this->dispatcher->dispatch(new EntityCreatedEvent($model));
             return $model;
         });
@@ -160,7 +159,7 @@ class EntityService implements IEntityService
      *
      * @throws EntityServiceOperationException
      */
-    public function handleTransaction(Closure $callback)
+    protected function handleTransaction(Closure $callback)
     {
         try {
             $this->connection->beginTransaction();

@@ -21,4 +21,37 @@ class LaravelEntityServicesServiceProvider extends ServiceProvider
     {
         $this->app->singleton(IEntityServiceFactory::class, EntityServiceFactory::class);
     }
+
+    /**
+     * Make package settings needed to correct work.
+     *
+     * @return void
+     */
+    public function boot(): void
+    {
+        $this->publishes(
+            [
+                __DIR__ . '/../config/laravel_entity_services.php' =>
+                    $this->app->make('path.config') . DIRECTORY_SEPARATOR . 'laravel_entity_services.php',
+            ],
+            'laravel_repositories'
+        );
+        $this->mergeConfigFrom(__DIR__ . '/../config/laravel_entity_services.php', 'laravel_entity_services');
+
+        $this->registerCustomBindings();
+    }
+
+    /**
+     * Register custom repositories implementations.
+     *
+     * @return void
+     */
+    protected function registerCustomBindings(): void
+    {
+        $entityServiceFactory = $this->app->make(IEntityServiceFactory::class);
+
+        foreach (config('laravel_entity_services.bindings') as $className => $repository) {
+            $entityServiceFactory->register($className, $repository);
+        }
+    }
 }

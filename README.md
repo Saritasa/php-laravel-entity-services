@@ -17,10 +17,11 @@
 ### Publish file  
 To publish configuration file you can run next command:  
 ```bash  
-php artisan vendor:publish --tag=laravel_entity_services```  
+php artisan vendor:publish --tag=laravel_entity_services
+```  
 It will copy file laravel_entity_services.php in config directory.  
-### Register custom repositories implementaion  
-To register your own IRepository impelementaion you can put it into configuration file, like:  
+### Register custom entity service implementation  
+To register your own IEntityService implementation you can put it into configuration file, like:  
 ```php  
 return [  
  'bindings' => [\App\Models\User::class => \App\EntityServices\UserEntityService::class,],];  

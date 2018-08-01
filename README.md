@@ -10,7 +10,9 @@
  ### Get service for model: 
  ```php    
  $entityServiceFactory = app(IEntityServiceFactory::class);  
- $entityService = $entityServiceFactory->build(User::class); ``` *Note: if entity class not exists, EntityServiceException will be thrown*  
+ $entityService = $entityServiceFactory->build(User::class);
+ ``` 
+ *Note: if entity class not exists, EntityServiceException will be thrown
 ## Configuration  
 ### Publish file  
 To publish configuration file you can run next command:  

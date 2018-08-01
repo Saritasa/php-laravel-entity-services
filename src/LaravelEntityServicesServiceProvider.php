@@ -6,10 +6,19 @@ use Illuminate\Support\ServiceProvider;
 use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
 use Saritasa\LaravelEntityServices\Services\EntityServiceFactory;
 
+/**
+ * Package providers. Registers package implementation in DI container.
+ * Make settings needed to correct work.
+ */
 class LaravelEntityServicesServiceProvider extends ServiceProvider
 {
-    public function boot(): void
+    /**
+     * Register package implementation in DI container.
+     *
+     * @return void
+     */
+    public function register(): void
     {
-        $this->app->bind(IEntityServiceFactory::class, EntityServiceFactory::class);
+        $this->app->singleton(IEntityServiceFactory::class, EntityServiceFactory::class);
     }
 }

@@ -56,7 +56,7 @@ class EntityServiceFactory implements IEntityServiceFactory
      *
      * @var array
      */
-    protected static $sharedInstances = [];
+    protected $sharedInstances = [];
 
     /**
      * Entity services factory.
@@ -83,10 +83,10 @@ class EntityServiceFactory implements IEntityServiceFactory
      */
     public function build(string $modelClass): IEntityService
     {
-        if (!isset(static::$sharedInstances[$modelClass]) || static::$sharedInstances[$modelClass] === null) {
-            static::$sharedInstances[$modelClass] = $this->buildEntityService($modelClass);
+        if (!isset($this->sharedInstances[$modelClass]) || $this->sharedInstances[$modelClass] === null) {
+            $this->sharedInstances[$modelClass] = $this->buildEntityService($modelClass);
         }
-        return static::$sharedInstances[$modelClass];
+        return $this->sharedInstances[$modelClass];
     }
 
     /**
@@ -101,7 +101,7 @@ class EntityServiceFactory implements IEntityServiceFactory
     protected function buildEntityService(string $modelClass): IEntityService
     {
         try {
-            if (isset($this->restfulServicesBinds[$modelClass])) {
+            if (isset($this->registeredServices[$modelClass])) {
                 return new $this->registeredServices[$modelClass](
                     $modelClass,
                     $this,

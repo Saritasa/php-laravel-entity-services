@@ -1,8 +1,8 @@
 
 # Laravel Entity Services
-[![Build Status](https://travis-ci.org/Saritasa/php-laravel-entity-services.svg?branch=master)](https://travis-ci.org/Saritasa/php-laravel-entity-services)    
-[![codecov](https://codecov.io/gh/Saritasa/php-laravel-entity-services/branch/master/graph/badge.svg)](https://codecov.io/gh/Saritasa/php-laravel-entity-services)    
-[![PHPv](https://img.shields.io/packagist/php-v/saritasa/laravel-entity-services.svg)](http://www.php.net)    
+[![Build Status](https://travis-ci.org/Saritasa/php-laravel-entity-services.svg?branch=master)](https://travis-ci.org/Saritasa/php-laravel-entity-services)
+[![codecov](https://codecov.io/gh/Saritasa/php-laravel-entity-services/branch/master/graph/badge.svg)](https://codecov.io/gh/Saritasa/php-laravel-entity-services)
+[![PHPv](https://img.shields.io/packagist/php-v/saritasa/laravel-entity-services.svg)](http://www.php.net)
 [![Downloads](https://img.shields.io/packagist/dt/saritasa/laravel-entity-services.svg)](https://packagist.org/packages/saritasa/laravel-entity-services)
 
 ## Library for fast build laravel based application with simple CRUD operations.

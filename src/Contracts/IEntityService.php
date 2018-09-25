@@ -34,7 +34,7 @@ interface IEntityService
      * @throws ValidationException
      * @throws EntityServiceOperationException
      *
-     * @return void
+     * @return Model
      */
     public function update(Model $model, array $modelParams): Model;
 

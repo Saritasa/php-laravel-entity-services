@@ -1,3 +1,9 @@
+# Changes History
+
+1.1.1
+-----
+Switched to Dingo/Api 2.0 beta (which contains bugfix in authentication)
+
 1.1.0
 -----
 + Add package configuration file.

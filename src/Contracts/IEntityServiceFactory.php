@@ -2,6 +2,8 @@
 
 namespace Saritasa\LaravelEntityServices\Contracts;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Saritasa\LaravelEntityServices\Exceptions\EntityServiceRegisterException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceException;
 
 /**
@@ -17,6 +19,7 @@ interface IEntityServiceFactory
      * @return IEntityService
      *
      * @throws EntityServiceException
+     * @throws BindingResolutionException
      */
     public function build(string $modelClass): IEntityService;
 
@@ -27,6 +30,8 @@ interface IEntityServiceFactory
      * @param string $entityServiceClass Custom service class
      *
      * @return void
+     *
+     * @throws EntityServiceRegisterException
      */
     public function register(string $modelClass, string $entityServiceClass): void;
 }

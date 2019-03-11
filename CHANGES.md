@@ -4,7 +4,14 @@
 -----
 - Removed method `validate` from IEntityService contract
 + Added getting validation rules from entity service instead repository
++ Rename EntityServiceBindingException to EntityServiceRegisterException
 + Fixed description typos
++ Service factory now have less dependencies and leave resolving it on
+DI-container side
++ EntityService lost EntityServiceFactory dependency
++ EntityServiceRegisterException now will be thrown immediately when
+attempt to register custom entity service with wrong parameters
++ Increase unit tests coverage
 
 1.1.1
 -----

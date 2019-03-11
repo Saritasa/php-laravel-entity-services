@@ -204,7 +204,9 @@ class EntityService implements IEntityService
      */
     protected function getValidationRules(): array
     {
-        return $this->validationRules;
+        $validationRulesFromRepository = $this->repository->getModelValidationRules();
+
+        return !empty($validationRulesFromRepository) ? $validationRulesFromRepository : $this->validationRules;
     }
 
     /**

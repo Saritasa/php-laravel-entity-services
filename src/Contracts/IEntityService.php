@@ -2,7 +2,6 @@
 
 namespace Saritasa\LaravelEntityServices\Contracts;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceOperationException;

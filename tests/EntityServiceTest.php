@@ -16,7 +16,6 @@ use Saritasa\LaravelEntityServices\Exceptions\EntityServiceOperationException;
 use Saritasa\LaravelEntityServices\Services\EntityService;
 use Saritasa\LaravelEntityServices\Tests\TestEntity;
 use Saritasa\LaravelRepositories\Contracts\IRepository;
-use Saritasa\LaravelRepositories\Exceptions\RepositoryException;
 
 class EntityServiceTest extends TestCase
 {

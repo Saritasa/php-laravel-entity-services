@@ -90,9 +90,9 @@ class EntityServiceFactory implements IEntityServiceFactory
     }
 
     /**
-     * Build repository by model class from registered instances or creates default.
+     * Build entity service by model class from registered instances or creates default.
      *
-     * @param string $modelClass Model class
+     * @param string $modelClass Model class to build entity service
      *
      * @return IEntityService
      *

@@ -66,6 +66,13 @@ class EntityService implements IEntityService
     protected $dispatcher;
 
     /**
+     * Validation rules.
+     *
+     * @var array
+     */
+    protected $validationRules = [];
+
+    /**
      * Default restful service for all entities.
      *
      * @param string $className Entity class name
@@ -184,10 +191,20 @@ class EntityService implements IEntityService
      */
     protected function validate(array $data, array $rules = null): void
     {
-        $validator = $this->validatorFactory->make($data, $rules ?? $this->repository->getModelValidationRules());
+        $validator = $this->validatorFactory->make($data, $rules ?? $this->getValidationRules());
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+
+    /**
+     * Returns validation rules.
+     *
+     * @return array
+     */
+    protected function getValidationRules(): array
+    {
+        return $this->validationRules;
     }
 
     /**

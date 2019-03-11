@@ -9,7 +9,6 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use Saritasa\LaravelEntityServices\Contracts\IEntityService;
-use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
 use Saritasa\LaravelEntityServices\Events\EntityCreatedEvent;
 use Saritasa\LaravelEntityServices\Events\EntityDeletedEvent;
 use Saritasa\LaravelEntityServices\Events\EntityUpdatedEvent;
@@ -23,13 +22,6 @@ use Throwable;
  */
 class EntityService implements IEntityService
 {
-    /**
-     * Restful services factory realization.
-     *
-     * @var IEntityServiceFactory
-     */
-    protected $restfulServiceFactory;
-
     /**
      * Current entity repository.
      *
@@ -76,7 +68,6 @@ class EntityService implements IEntityService
      * Default restful service for all entities.
      *
      * @param string $className Entity class name
-     * @param IEntityServiceFactory $restfulServiceFactory Restful services factory realization
      * @param IRepository $repository Current entity repository
      * @param Factory $validatorFactory Validation factory
      * @param ConnectionInterface $connection Connection interface realization
@@ -84,7 +75,6 @@ class EntityService implements IEntityService
      */
     public function __construct(
         string $className,
-        IEntityServiceFactory $restfulServiceFactory,
         IRepository $repository,
         Factory $validatorFactory,
         ConnectionInterface $connection,
@@ -94,7 +84,6 @@ class EntityService implements IEntityService
         $this->validatorFactory = $validatorFactory;
         $this->modelClass = $className;
         $this->connection = $connection;
-        $this->restfulServiceFactory = $restfulServiceFactory;
         $this->dispatcher = $dispatcher;
     }
 

@@ -6,21 +6,21 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
-use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
 use Saritasa\LaravelEntityServices\Events\EntityCreatedEvent;
 use Saritasa\LaravelEntityServices\Events\EntityUpdatedEvent;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceOperationException;
 use Saritasa\LaravelEntityServices\Services\EntityService;
 use Saritasa\LaravelEntityServices\Tests\TestEntity;
 use Saritasa\LaravelRepositories\Contracts\IRepository;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 class EntityServiceTest extends TestCase
 {
-    /** @var MockInterface|IEntityServiceFactory */
-    protected $restfulServiceFactoryMock;
     /** @var MockInterface|IRepository */
     protected $repositoryMock;
     /** @var MockInterface|ConnectionInterface */
@@ -33,33 +33,35 @@ class EntityServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->repositoryMock = \Mockery::mock(IRepository::class);
+        $this->repositoryMock = Mockery::mock(IRepository::class);
         $this->repositoryMock->shouldReceive('getModelValidationRules')->andReturn([]);
-        $this->restfulServiceFactoryMock = \Mockery::mock(IEntityServiceFactory::class);
-        $this->connectionMock = \Mockery::mock(ConnectionInterface::class);
-        $this->connectionMock->shouldReceive('beginTransaction')->withArgs([])->andReturnNull();
-        $this->connectionMock->shouldReceive('commit')->withArgs([])->andReturnNull();
-        $this->connectionMock->shouldReceive('rollBack')->withArgs([])->andReturnNull();
-        $this->dispatcher = \Mockery::mock(Dispatcher::class);
+        $this->connectionMock = Mockery::mock(ConnectionInterface::class);
+        $this->connectionMock->shouldReceive('beginTransaction')->andReturnNull();
+        $this->connectionMock->shouldReceive('commit')->andReturnNull();
+        $this->connectionMock->shouldReceive('rollBack')->andReturnNull();
+        $this->dispatcher = Mockery::mock(Dispatcher::class);
         $this->testEntity = new TestEntity([
-            TestEntity::FIELD_1 => str_random(),
-            TestEntity::FIELD_2 => str_random(),
-            TestEntity::FIELD_3 => str_random(),
+            TestEntity::FIELD_1 => Str::random(),
+            TestEntity::FIELD_2 => Str::random(),
+            TestEntity::FIELD_3 => Str::random(),
         ]);
     }
 
     /**
      * Test create method.
      *
+     * @return void
+     *
      * @throws ValidationException
      * @throws EntityServiceOperationException
+     * @throws InvalidArgumentException
      */
     public function testCreateMethod(): void
     {
         $params = [
-            TestEntity::FIELD_1 => str_random(),
-            TestEntity::FIELD_2 => str_random(),
-            TestEntity::FIELD_3 => str_random(),
+            TestEntity::FIELD_1 => Str::random(),
+            TestEntity::FIELD_2 => Str::random(),
+            TestEntity::FIELD_3 => Str::random(),
         ];
 
         $this->repositoryMock->shouldReceive('create')->andReturnUsing(function (TestEntity $entity) {
@@ -73,7 +75,6 @@ class EntityServiceTest extends TestCase
             });
         $restfulService = new EntityService(
             TestEntity::class,
-            $this->restfulServiceFactoryMock,
             $this->repositoryMock,
             $this->getValidatorFactory(true, $params),
             $this->connectionMock,
@@ -87,15 +88,17 @@ class EntityServiceTest extends TestCase
     /**
      * Test update method.
      *
+     * @return void
+     *
      * @throws EntityServiceOperationException
      * @throws ValidationException
      */
     public function testUpdateMethod(): void
     {
         $newParams = [
-            TestEntity::FIELD_1 => str_random(),
-            TestEntity::FIELD_2 => str_random(),
-            TestEntity::FIELD_3 => str_random(),
+            TestEntity::FIELD_1 => Str::random(),
+            TestEntity::FIELD_2 => Str::random(),
+            TestEntity::FIELD_3 => Str::random(),
         ];
 
         $this->repositoryMock
@@ -117,7 +120,6 @@ class EntityServiceTest extends TestCase
 
         $restfulService = new EntityService(
             TestEntity::class,
-            $this->restfulServiceFactoryMock,
             $this->repositoryMock,
             $this->getValidatorFactory(true, $newParams),
             $this->connectionMock,
@@ -131,7 +133,6 @@ class EntityServiceTest extends TestCase
     {
         $restfulService = new EntityService(
             TestEntity::class,
-            $this->restfulServiceFactoryMock,
             $this->repositoryMock,
             $this->getValidatorFactory(true),
             $this->connectionMock,
@@ -143,9 +144,9 @@ class EntityServiceTest extends TestCase
 
     protected function getValidatorFactory(bool $success, array $data = [], array $rules = []): Factory
     {
-        $validatorMock = \Mockery::mock(Validator::class);
+        $validatorMock = Mockery::mock(Validator::class);
         $validatorMock->shouldReceive('fails')->andReturn(!$success);
-        $validationFactory = \Mockery::mock(Factory::class);
+        $validationFactory = Mockery::mock(Factory::class);
         $validationFactory->shouldReceive('make')->withArgs([$data, $rules])->andReturn($validatorMock);
         /** @var Factory $validationFactory */
         return $validationFactory;

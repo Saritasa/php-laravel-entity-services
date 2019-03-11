@@ -2,27 +2,22 @@
 
 namespace Saritasa\LaravelEntityServices\Services;
 
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Model;
 use Saritasa\LaravelEntityServices\Contracts\IEntityService;
 use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
+use Saritasa\LaravelEntityServices\Exceptions\EntityServiceRegisterException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceException;
+use Saritasa\LaravelRepositories\Contracts\IRepository;
 use Saritasa\LaravelRepositories\Contracts\IRepositoryFactory;
-use Throwable;
+use Saritasa\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
  * Entity services factory.
  */
 class EntityServiceFactory implements IEntityServiceFactory
 {
-    /**
-     * Collection of correspondences model to service.
-     *
-     * @var array
-     */
-    protected $registeredServices = [];
-
     /**
      * Repository factory.
      *
@@ -31,25 +26,11 @@ class EntityServiceFactory implements IEntityServiceFactory
     protected $repositoryFactory;
 
     /**
-     * Validation factory.
+     * Collection of correspondences model to service.
      *
-     * @var ValidationFactory
+     * @var array
      */
-    protected $factory;
-
-    /**
-     * Default db connection.
-     *
-     * @var ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * Events dispatcher.
-     *
-     * @var Dispatcher
-     */
-    protected $dispatcher;
+    protected $registeredServices = [];
 
     /**
      * Already created instances.
@@ -59,27 +40,28 @@ class EntityServiceFactory implements IEntityServiceFactory
     protected $sharedInstances = [];
 
     /**
+     * DI container instance.
+     *
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * Entity services factory.
      *
+     * @param Container $container DI container instance
      * @param IRepositoryFactory $repositoryFactory Repository factory
-     * @param ValidationFactory $factory Validation factory
-     * @param ConnectionInterface $connection Database connection
-     * @param Dispatcher $dispatcher Events dispatcher
      */
-    public function __construct(
-        IRepositoryFactory $repositoryFactory,
-        ValidationFactory $factory,
-        ConnectionInterface $connection,
-        Dispatcher $dispatcher
-    ) {
+    public function __construct(Container $container, IRepositoryFactory $repositoryFactory)
+    {
+        $this->container = $container;
         $this->repositoryFactory = $repositoryFactory;
-        $this->factory = $factory;
-        $this->connection = $connection;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws BindingResolutionException
      */
     public function build(string $modelClass): IEntityService
     {
@@ -97,30 +79,25 @@ class EntityServiceFactory implements IEntityServiceFactory
      * @return IEntityService
      *
      * @throws EntityServiceException
+     * @throws BindingResolutionException
      */
     protected function buildEntityService(string $modelClass): IEntityService
     {
         try {
             if (isset($this->registeredServices[$modelClass])) {
-                return new $this->registeredServices[$modelClass](
-                    $modelClass,
-                    $this,
-                    $this->repositoryFactory->getRepository($modelClass),
-                    $this->factory,
-                    $this->connection,
-                    $this->dispatcher
-                );
+                return $this->container->make($this->registeredServices[$modelClass]);
             }
 
-            return new EntityService(
-                $modelClass,
-                $this,
-                $this->repositoryFactory->getRepository($modelClass),
-                $this->factory,
-                $this->connection,
-                $this->dispatcher
-            );
-        } catch (Throwable $exception) {
+            $this->container->when(EntityService::class)->needs('$className')->give($modelClass);
+            $repository = $this->repositoryFactory->getRepository($modelClass);
+            $this->container->when(EntityService::class)
+                ->needs(IRepository::class)
+                ->give(function () use ($repository) {
+                    return $repository;
+                });
+
+            return $this->container->make(EntityService::class);
+        } catch (RepositoryException $exception) {
             throw new EntityServiceException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
@@ -128,6 +105,12 @@ class EntityServiceFactory implements IEntityServiceFactory
     /** {@inheritdoc} */
     public function register(string $modelClass, string $entityServiceClass): void
     {
+        if (!is_subclass_of($modelClass, Model::class)) {
+            throw new EntityServiceRegisterException("$modelClass must extend " . Model::class);
+        }
+        if (!is_subclass_of($entityServiceClass, IEntityService::class)) {
+            throw new EntityServiceRegisterException("$entityServiceClass must implement " . IEntityService::class);
+        }
         $this->registeredServices[$modelClass] = $entityServiceClass;
     }
 }

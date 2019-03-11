@@ -1,5 +1,11 @@
 # Changes History
 
+1.2.1
+-----
+- Removed method `validate` from IEntityService contract
++ Added getting validation rules from entity service instead repository
++ Fixed description typos
+
 1.1.1
 -----
 Switched to Dingo/Api 2.0 beta (which contains bugfix in authentication)

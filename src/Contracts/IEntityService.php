@@ -55,16 +55,4 @@ interface IEntityService
      * @return IRepository
      */
     public function getRepository(): IRepository;
-
-    /**
-     * Validate entity data before saving.
-     *
-     * @param array $data Data to validate
-     * @param array|null $rules Validation rules
-     *
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    public function validate(array $data, array $rules = null): void;
 }

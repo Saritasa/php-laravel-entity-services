@@ -142,37 +142,6 @@ class EntityServiceTest extends TestCase
         $this->assertEquals($this->repositoryMock, $restfulService->getRepository());
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function testValidateMethodIfException()
-    {
-        $someRules = [
-            str_random(),
-            str_random(),
-            str_random(),
-            str_random(),
-        ];
-        $inputData = [
-            str_random(),
-            str_random(),
-            str_random(),
-            str_random(),
-        ];
-
-        $restfulService = new EntityService(
-            TestEntity::class,
-            $this->restfulServiceFactoryMock,
-            $this->repositoryMock,
-            $this->getValidatorFactory(false, $inputData, $someRules),
-            $this->connectionMock,
-            $this->dispatcher
-        );
-
-        $this->expectException(ValidationException::class);
-        $restfulService->validate($inputData, $someRules);
-    }
-
     protected function getValidatorFactory(bool $success, array $data = [], array $rules = []): Factory
     {
         $validatorMock = \Mockery::mock(Validator::class);

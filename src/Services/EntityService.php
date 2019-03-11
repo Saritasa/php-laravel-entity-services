@@ -182,7 +182,7 @@ class EntityService implements IEntityService
      *
      * @return void
      */
-    public function validate(array $data, array $rules = null): void
+    protected function validate(array $data, array $rules = null): void
     {
         $validator = $this->validatorFactory->make($data, $rules ?? $this->repository->getModelValidationRules());
         if ($validator->fails()) {

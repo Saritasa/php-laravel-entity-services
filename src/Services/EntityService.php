@@ -2,19 +2,18 @@
 
 namespace Saritasa\LaravelEntityServices\Services;
 
-use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Validation\Factory;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use Saritasa\LaravelEntityServices\Contracts\IEntityService;
 use Saritasa\LaravelEntityServices\Events\EntityCreatedEvent;
 use Saritasa\LaravelEntityServices\Events\EntityDeletedEvent;
 use Saritasa\LaravelEntityServices\Events\EntityUpdatedEvent;
+use Saritasa\LaravelEntityServices\Exceptions\EntityServiceException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceOperationException;
 use Saritasa\LaravelRepositories\Contracts\IRepository;
-use Throwable;
+use Saritasa\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
  * Restful service to create, update and delete model. Has ability to validate model attributes.
@@ -44,13 +43,6 @@ class EntityService implements IEntityService
     protected $validatorFactory;
 
     /**
-     * Connection interface realization.
-     *
-     * @var ConnectionInterface
-     */
-    protected $connection;
-
-    /**
      * Events dispatcher.
      *
      * @var Dispatcher
@@ -70,20 +62,17 @@ class EntityService implements IEntityService
      * @param string $className Entity class name
      * @param IRepository $repository Current entity repository
      * @param Factory $validatorFactory Validation factory
-     * @param ConnectionInterface $connection Connection interface realization
      * @param Dispatcher $dispatcher Events dispatcher
      */
     public function __construct(
         string $className,
         IRepository $repository,
         Factory $validatorFactory,
-        ConnectionInterface $connection,
         Dispatcher $dispatcher
     ) {
         $this->repository = $repository;
         $this->validatorFactory = $validatorFactory;
         $this->modelClass = $className;
-        $this->connection = $connection;
         $this->dispatcher = $dispatcher;
     }
 
@@ -91,22 +80,33 @@ class EntityService implements IEntityService
     public function create(array $modelParams): Model
     {
         $this->validate($modelParams);
-        return $this->handleTransaction(function () use ($modelParams) {
+
+        try {
             $model = $this->repository->create(new $this->modelClass($modelParams));
-            $this->dispatcher->dispatch(new EntityCreatedEvent($model));
-            return $model;
-        });
+        } catch (RepositoryException $exception) {
+            throw new EntityServiceOperationException($exception->getMessage(), $exception);
+        }
+
+        $this->dispatcher->dispatch(new EntityCreatedEvent($model));
+
+        return $model;
     }
 
     /** {@inheritdoc} */
     public function update(Model $model, array $modelParams): Model
     {
+        $this->validateServedEntity($model);
         $this->validate($modelParams, $this->getValidationRulesForAttributes($modelParams));
-        return $this->handleTransaction(function () use ($model, $modelParams) {
+
+        try {
             $this->repository->save($model->fill($modelParams));
-            $this->dispatcher->dispatch(new EntityUpdatedEvent($model));
-            return $model;
-        });
+        } catch (RepositoryException $exception) {
+            throw new EntityServiceOperationException($exception->getMessage(), $exception);
+        }
+
+        $this->dispatcher->dispatch(new EntityUpdatedEvent($model));
+
+        return $model;
     }
 
     /**
@@ -138,34 +138,16 @@ class EntityService implements IEntityService
      */
     public function delete(Model $model): void
     {
+        $this->validateServedEntity($model);
         $this->checkBeforeDelete($model);
-        $this->handleTransaction(function () use ($model) {
-            $id = $model->getKey();
-            $this->repository->delete($model);
-            $this->dispatcher->dispatch(new EntityDeletedEvent($this->modelClass, $id));
-        });
-    }
-
-    /**
-     * Wrap closure in db transaction.
-     *
-     * @param Closure $callback Callback which will be wrapped into transaction
-     *
-     * @return mixed
-     *
-     * @throws EntityServiceOperationException
-     */
-    protected function handleTransaction(Closure $callback)
-    {
+        $id = $model->getKey();
         try {
-            $this->connection->beginTransaction();
-            return tap($callback(), function () {
-                $this->connection->commit();
-            });
-        } catch (Throwable $exception) {
-            $this->connection->rollBack();
+            $this->repository->delete($model);
+        } catch (RepositoryException $exception) {
             throw new EntityServiceOperationException($exception->getMessage(), $exception);
         }
+
+        $this->dispatcher->dispatch(new EntityDeletedEvent($this->modelClass, $id));
     }
 
     /**
@@ -196,6 +178,22 @@ class EntityService implements IEntityService
         $validationRulesFromRepository = $this->repository->getModelValidationRules();
 
         return !empty($validationRulesFromRepository) ? $validationRulesFromRepository : $this->validationRules;
+    }
+
+    /**
+     * Validates that provided entity can be served by this service.
+     *
+     * @param Model $model Model to validate
+     *
+     * @return void
+     *
+     * @throws EntityServiceException
+     */
+    protected function validateServedEntity(Model $model): void
+    {
+        if (!$model instanceof $this->modelClass) {
+            throw new EntityServiceException("This service can serve only {$this->modelClass} entities.");
+        }
     }
 
     /**

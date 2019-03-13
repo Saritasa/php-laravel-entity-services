@@ -4,6 +4,7 @@ namespace Saritasa\LaravelEntityServices\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
+use Saritasa\LaravelEntityServices\Exceptions\EntityServiceException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceOperationException;
 use Saritasa\LaravelRepositories\Contracts\IRepository;
 
@@ -31,6 +32,7 @@ interface IEntityService
      * @param array $modelParams Model needed parameters
      *
      * @throws ValidationException
+     * @throws EntityServiceException
      * @throws EntityServiceOperationException
      *
      * @return Model
@@ -43,6 +45,7 @@ interface IEntityService
      * @param Model $model Model to delete
      *
      * @throws EntityServiceOperationException
+     * @throws EntityServiceException
      *
      * @return void
      */

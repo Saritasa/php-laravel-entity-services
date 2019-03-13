@@ -1,5 +1,15 @@
 # Changes History
 
+1.2.3
+-----
+- Changed resolving entity service dependencies to use provided parameters when it builds instead Binding container resolver
+- Fixed description typos in service provider
+- Increase tests coverage
+
+1.2.2
+-----
+- Fix issue with update method when it does not take into account the validation rules inside the service.
+
 1.2.1
 -----
 - Removed method `validate` from IEntityService contract

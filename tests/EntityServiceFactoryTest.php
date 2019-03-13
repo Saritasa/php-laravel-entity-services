@@ -128,19 +128,11 @@ class EntityServiceFactoryTest extends TestCase
 
         if ($entityServiceClass) {
             $entityServiceFactory->register($modelClass, $entityServiceClass);
-        } else {
-            $contextualBindingBuilder = Mockery::mock(ContextualBindingBuilder::class);
-            $contextualBindingBuilder->shouldReceive('needs', 'give')->andReturnSelf();
-            $this->container->shouldReceive('when')
-                ->withArgs([EntityService::class])
-                ->andReturn($contextualBindingBuilder);
         }
 
         $entityServiceClass = $entityServiceClass ?? EntityService::class;
 
-        $this->container->shouldReceive('make')
-            ->withArgs([$entityServiceClass])
-            ->andReturn(Mockery::mock($entityServiceClass));
+        $this->container->shouldReceive('make')->andReturn(Mockery::mock($entityServiceClass));
 
         $firstInstance = $entityServiceFactory->build($modelClass);
         $secondInstance = $entityServiceFactory->build($modelClass);

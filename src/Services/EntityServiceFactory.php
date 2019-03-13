@@ -9,7 +9,6 @@ use Saritasa\LaravelEntityServices\Contracts\IEntityService;
 use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceRegisterException;
 use Saritasa\LaravelEntityServices\Exceptions\EntityServiceException;
-use Saritasa\LaravelRepositories\Contracts\IRepository;
 use Saritasa\LaravelRepositories\Contracts\IRepositoryFactory;
 use Saritasa\LaravelRepositories\Exceptions\RepositoryException;
 
@@ -88,15 +87,10 @@ class EntityServiceFactory implements IEntityServiceFactory
                 return $this->container->make($this->registeredServices[$modelClass]);
             }
 
-            $this->container->when(EntityService::class)->needs('$className')->give($modelClass);
-            $repository = $this->repositoryFactory->getRepository($modelClass);
-            $this->container->when(EntityService::class)
-                ->needs(IRepository::class)
-                ->give(function () use ($repository) {
-                    return $repository;
-                });
-
-            return $this->container->make(EntityService::class);
+            return $this->container->make(EntityService::class, [
+                'className' => $modelClass,
+                'repository' => $this->repositoryFactory->getRepository($modelClass),
+            ]);
         } catch (RepositoryException $exception) {
             throw new EntityServiceException($exception->getMessage(), $exception->getCode(), $exception);
         }

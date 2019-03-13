@@ -119,7 +119,7 @@ class EntityService implements IEntityService
      */
     protected function getValidationRulesForAttributes(array $modelParams, array $rules = []): array
     {
-        $modelRules = empty($rules) ? $this->repository->getModelValidationRules() : $rules;
+        $modelRules = empty($rules) ? $this->getValidationRules() : $rules;
         return array_intersect_key($modelRules, $modelParams);
     }
 

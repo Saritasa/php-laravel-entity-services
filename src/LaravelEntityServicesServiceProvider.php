@@ -2,6 +2,7 @@
 
 namespace Saritasa\LaravelEntityServices;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
 use Saritasa\LaravelEntityServices\Contracts\IEntityServiceFactory;
 use Saritasa\LaravelEntityServices\Services\EntityServiceFactory;
@@ -26,6 +27,8 @@ class LaravelEntityServicesServiceProvider extends ServiceProvider
      * Make package settings needed to correct work.
      *
      * @return void
+     *
+     * @throws BindingResolutionException
      */
     public function boot(): void
     {
@@ -42,16 +45,18 @@ class LaravelEntityServicesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register custom repositories implementations.
+     * Register custom entity services implementations.
      *
      * @return void
+     *
+     * @throws BindingResolutionException
      */
     protected function registerCustomBindings(): void
     {
         $entityServiceFactory = $this->app->make(IEntityServiceFactory::class);
 
-        foreach (config('laravel_entity_services.bindings') as $className => $repository) {
-            $entityServiceFactory->register($className, $repository);
+        foreach (config('laravel_entity_services.bindings') as $className => $entityService) {
+            $entityServiceFactory->register($className, $entityService);
         }
     }
 }

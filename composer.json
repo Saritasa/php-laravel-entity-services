@@ -12,9 +12,8 @@
     ],
     "require": {
         "php": ">=7.1",
-        "dingo/api": "2.0.*@beta",
         "illuminate/support": "5.*",
-        "saritasa/laravel-repositories": "^3.1"
+        "saritasa/laravel-repositories": "^3.3"
     },
     "require-dev": {
         "mockery/mockery": "^1.1",

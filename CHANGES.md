@@ -1,5 +1,11 @@
 # Changes History
 
+1.3.0
+-----
+- Remove direct dependency from dingo/api
+- Update dependent version of laravel-repositories library
+- Added compatibility with laravel 5.8
+
 1.2.3
 -----
 - Changed resolving entity service dependencies to use provided parameters when it builds instead Binding container resolver

@@ -79,8 +79,8 @@ class EntityServiceFactoryTest extends TestCase
             $this->repositoryFactory->shouldReceive('getRepository')
                 ->withArgs([$model])
                 ->andReturn(Mockery::mock(IRepository::class));
-            $this->container->shouldReceive('make')->withArgs([$serviceClass])->andReturn($expectedService);
-            $actualService= $entityServiceFactory->build($model);
+            $this->container->shouldReceive('make')->andReturn($expectedService);
+            $actualService = $entityServiceFactory->build($model);
             $this->assertSame($expectedService, $actualService);
         }
     }

@@ -83,14 +83,20 @@ class EntityServiceFactory implements IEntityServiceFactory
     protected function buildEntityService(string $modelClass): IEntityService
     {
         try {
-            if (isset($this->registeredServices[$modelClass])) {
-                return $this->container->make($this->registeredServices[$modelClass]);
+            $entityServiceClass = $this->registeredServices[$modelClass] ?? EntityService::class;
+
+            $parameters = [];
+
+            if ($entityServiceClass === EntityService::class ||
+                is_subclass_of($entityServiceClass, EntityService::class)
+            ) {
+                $parameters = [
+                    'className' => $modelClass,
+                    'repository' => $this->repositoryFactory->getRepository($modelClass),
+                ];
             }
 
-            return $this->container->make(EntityService::class, [
-                'className' => $modelClass,
-                'repository' => $this->repositoryFactory->getRepository($modelClass),
-            ]);
+            return $this->container->make($entityServiceClass, $parameters);
         } catch (RepositoryException $exception) {
             throw new EntityServiceException($exception->getMessage(), $exception->getCode(), $exception);
         }

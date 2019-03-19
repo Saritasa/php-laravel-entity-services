@@ -1,5 +1,10 @@
 # Changes History
 
+1.3.1
+-----
+- Resolving service dependency now happened on factory side in case if service inherit EntityService class
+and don't has own constructor. 
+
 1.3.0
 -----
 - Remove direct dependency from dingo/api

@@ -12,13 +12,13 @@
     ],
     "require": {
         "php": ">=7.1",
-        "illuminate/support": "5.*",
+        "illuminate/support": "5.*|6.0",
         "saritasa/laravel-repositories": "^3.3"
     },
     "require-dev": {
         "mockery/mockery": "^1.1",
         "phpunit/phpunit": "^7.5",
-        "squizlabs/php_codesniffer": "^3.0"
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "autoload": {
         "psr-4" : {

@@ -1,5 +1,9 @@
 # Changes History
 
+1.4.0
+-----
+- Declare compatibility with Laravel 6 
+
 1.3.0
 -----
 - Remove direct dependency from dingo/api

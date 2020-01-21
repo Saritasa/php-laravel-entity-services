@@ -8,7 +8,7 @@
 ## Library for fast build laravel based application with simple CRUD operations.
 As Repositories layer uses [laravel-repositories](https://github.com/Saritasa/php-laravel-repositories) library.
 
-## Laravel 5.5
+## Laravel 5.5/6.0
  Install the ```saritasa/laravel-entity-services``` package:
 
 ```

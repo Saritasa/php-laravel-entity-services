@@ -1,6 +1,7 @@
 
 # Laravel Entity Services
-[![Build Status](https://travis-ci.org/Saritasa/php-laravel-entity-services.svg?branch=master)](https://travis-ci.org/Saritasa/php-laravel-entity-services)
+[![PHP Unit](https://github.com/Saritasa/php-laravel-entity-services/workflows/PHP%20Unit/badge.svg)](https://github.com/Saritasa/php-laravel-entity-services/actions)
+[![PHP CodeSniffer](https://github.com/Saritasa/php-laravel-entity-services/workflows/PHP%20Codesniffer/badge.svg)](https://github.com/Saritasa/php-laravel-entity-services/actions)
 [![codecov](https://codecov.io/gh/Saritasa/php-laravel-entity-services/branch/master/graph/badge.svg)](https://codecov.io/gh/Saritasa/php-laravel-entity-services)
 [![PHPv](https://img.shields.io/packagist/php-v/saritasa/laravel-entity-services.svg)](http://www.php.net)
 [![Downloads](https://img.shields.io/packagist/dt/saritasa/laravel-entity-services.svg)](https://packagist.org/packages/saritasa/laravel-entity-services)

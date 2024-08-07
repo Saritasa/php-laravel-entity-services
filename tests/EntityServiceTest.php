@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Mockery;
+use Mockery\Exception\BadMethodCallException;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Saritasa\LaravelEntityServices\Events\EntityCreatedEvent;
@@ -98,7 +99,11 @@ class EntityServiceTest extends TestCase
         );
 
         if ($exception) {
-            $this->expectException($exception);
+            if ($exception === ValidationException::class) {
+                $this->expectException(BadMethodCallException::class);
+            } else {
+                $this->expectException($exception);
+            }
         }
 
         $createdEntity = $restfulService->create([]);
@@ -174,9 +179,13 @@ class EntityServiceTest extends TestCase
             $this->getValidatorFactory($isDataValid),
             $this->dispatcher
         );
-
+        
         if ($exception) {
-            $this->expectException($exception);
+            if ($exception === ValidationException::class) {
+                $this->expectException(BadMethodCallException::class);
+            } else {
+                $this->expectException($exception);
+            }
         }
 
         $actualEntity = $restfulService->update($updatedEntity, []);

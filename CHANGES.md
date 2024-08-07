@@ -1,5 +1,10 @@
 # Changes History
 
+2.0.0
+-----
++ Declare compatibility with Laravel 11
++ Updated saritasa/laravel-repositories to new major version
+
 1.4.0
 -----
 - Declare compatibility with Laravel 6 
